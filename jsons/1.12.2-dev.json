@@ -19,6 +19,10 @@
       "url": "http://files.minecraftforge.net/maven"
     },
     {
+      "name": "net.minecraftforge:coremods:1.0-SNAPSHOT",
+      "url": "http://files.minecraftforge.net/maven"
+    },
+    {
       "name": "jline:jline:2.13",
       "children": ["sources"],
       "url" : "http://repo.maven.apache.org/maven2"
