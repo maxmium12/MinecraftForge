@@ -22,8 +22,13 @@ package net.minecraftforge.common;
 import static net.minecraftforge.common.ForgeVersion.Status.*;
 
 import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -32,6 +37,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.electronwill.nightconfig.core.Config;
+import com.electronwill.nightconfig.core.UnmodifiableConfig;
+import com.electronwill.nightconfig.core.path.PathConfig;
+import net.minecraftforge.fml.common.versioning.DefaultArtifactVersion;
+import net.minecraftforge.fml.loading.moddiscovery.ModInfo;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -105,6 +115,27 @@ public class ForgeVersion
     public static String getVersion()
     {
         return String.format("%d.%d.%d.%d", majorVersion, minorVersion, revisionVersion, buildVersion);
+    }
+
+    public static List<ModInfo> getModInfos()
+    {
+        PathConfig minecraftmod;
+        PathConfig forgemod;
+        try
+        {
+            minecraftmod = PathConfig.of(Paths.get(ForgeVersion.class.getClassLoader().getResource("minecraftmod.toml").toURI()));
+            forgemod = PathConfig.of(Paths.get(ForgeVersion.class.getClassLoader().getResource("forgemod.toml").toURI()));
+            minecraftmod.load();
+            forgemod.load();
+        }
+        catch (URISyntaxException | NullPointerException e)
+        {
+            throw new RuntimeException("Missing toml configs for minecraft and forge!", e);
+        }
+        return Arrays.asList(
+                new ModInfo(null, minecraftmod),
+                new ModInfo(null, forgemod)
+        );
     }
 
     public static enum Status

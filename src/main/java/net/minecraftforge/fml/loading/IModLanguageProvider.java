@@ -40,8 +40,6 @@ public interface IModLanguageProvider
     Consumer<ScanResult> getFileVisitor();
 
     interface IModLanguageLoader {
-        ModContainer loadMod(ModFile file, ClassLoader modClassLoader);
+        ModContainer loadMod(ModInfo info, ClassLoader modClassLoader);
     }
-
-    List<ModContainer> buildModContainers(List<ModInfo> modFiles, ClassLoader modClassLoader);
 }

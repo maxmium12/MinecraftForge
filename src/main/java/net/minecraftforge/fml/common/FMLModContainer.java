@@ -54,6 +54,7 @@ import net.minecraftforge.fml.common.versioning.DefaultArtifactVersion;
 import net.minecraftforge.fml.common.versioning.DependencyParser;
 import net.minecraftforge.fml.common.versioning.VersionParser;
 import net.minecraftforge.fml.common.versioning.VersionRange;
+import net.minecraftforge.fml.loading.moddiscovery.ModInfo;
 import net.minecraftforge.fml.relauncher.Side;
 
 import org.apache.commons.io.IOUtils;
@@ -77,6 +78,8 @@ import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 
 import javax.annotation.Nullable;
+
+import static net.minecraftforge.fml.Logging.CORE;
 
 public class FMLModContainer implements ModContainer
 {
@@ -106,7 +109,7 @@ public class FMLModContainer implements ModContainer
     private URL updateJSONUrl;
     private int classVersion;
 
-    private final Logger modLog;
+    private Logger modLog;
 
     public FMLModContainer(String className, ModCandidate container, Map<String, Object> modDescriptor)
     {
@@ -131,6 +134,20 @@ public class FMLModContainer implements ModContainer
         sanityCheckModId();
 
         modLog = LogManager.getLogger(getModId());
+    }
+
+    public FMLModContainer(ModInfo info, String className, ClassLoader modClassLoader)
+    {
+        try
+        {
+            final Class<?> aClass = Class.forName(className, true, modClassLoader);
+            LogManager.getLogger("FML").error("Loaded {} with {}", aClass, aClass.getClassLoader());
+        }
+        catch (ClassNotFoundException e)
+        {
+            LogManager.getLogger("FML").error(CORE, "Failed to load class {}", className, e);
+            throw new RuntimeException(e);
+        }
     }
 
     private void sanityCheckModId()

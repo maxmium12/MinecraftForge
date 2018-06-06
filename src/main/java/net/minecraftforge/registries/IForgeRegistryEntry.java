@@ -22,6 +22,8 @@ package net.minecraftforge.registries;
 import com.google.common.reflect.TypeToken;
 
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.ModThreadContext;
+import net.minecraftforge.fml.StringUtils;
 import net.minecraftforge.fml.common.FMLContainer;
 import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.InjectedModContainer;
@@ -78,8 +80,7 @@ public interface IForgeRegistryEntry<V>
             int index = name.lastIndexOf(':');
             String oldPrefix = index == -1 ? "" : name.substring(0, index).toLowerCase();
             name = index == -1 ? name : name.substring(index + 1);
-            ModContainer mc = Loader.instance().activeModContainer();
-            String prefix = mc == null || (mc instanceof InjectedModContainer && ((InjectedModContainer)mc).wrappedContainer instanceof FMLContainer) ? "minecraft" : mc.getModId().toLowerCase();
+            String prefix = ModThreadContext.get().getCurrentContainer().getPrefix();
             if (!oldPrefix.equals(prefix) && oldPrefix.length() > 0)
             {
                 FMLLog.log.info("Potentially Dangerous alternative prefix `{}` for name `{}`, expected `{}`. This could be a intended override, but in most cases indicates a broken mod.", oldPrefix, name, prefix);

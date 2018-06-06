@@ -20,11 +20,20 @@
 package net.minecraftforge.fml.loading;
 
 import cpw.mods.modlauncher.api.IEnvironment;
+import cpw.mods.modlauncher.api.ITransformingClassLoader;
+import net.minecraftforge.api.Side;
 
 public abstract class FMLCommonLaunchHandler
 {
     public void setup(final IEnvironment environment)
     {
         // We need to check for deobf and patched jar here and if not, build one.
+    }
+
+    public abstract Side getSidedness();
+
+    protected void beforeStart(ITransformingClassLoader launchClassLoader)
+    {
+        FMLLoader.beforeStart(launchClassLoader);
     }
 }
