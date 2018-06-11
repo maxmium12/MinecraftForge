@@ -19,6 +19,8 @@
 
 package net.minecraftforge.fml.common;
 
+import net.minecraftforge.fml.language.ModContainer;
+
 public class WrongMinecraftVersionException extends EnhancedRuntimeException
 {
     private static final long serialVersionUID = 1L;

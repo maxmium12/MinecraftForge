@@ -1,6 +1,6 @@
 /*
  * Minecraft Forge
- * Copyright (c) 2016.
+ * Copyright (c) 2018.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,33 +17,20 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package net.minecraftforge.fml.common.discovery;
+package net.minecraftforge.fml.client;
 
-import java.util.List;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraftforge.fml.loading.ModList;
+import net.minecraftforge.fml.loading.moddiscovery.ModInfo;
 
-import net.minecraftforge.fml.language.ModContainer;
+import java.util.Optional;
+import java.util.function.BiFunction;
 
-public enum ContainerType
+public class ConfigGuiHandler
 {
-    JAR(JarDiscoverer.class),
-    DIR(DirectoryDiscoverer.class);
-
-    private ITypeDiscoverer discoverer;
-
-    private ContainerType(Class<? extends ITypeDiscoverer> discovererClass)
+    public static Optional<BiFunction<Minecraft, GuiScreen, GuiScreen>> getGuiFactoryFor(ModInfo selectedMod)
     {
-        try
-        {
-            this.discoverer = discovererClass.newInstance();
-        }
-        catch (ReflectiveOperationException e)
-        {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public List<ModContainer> findMods(ModCandidate candidate, ASMDataTable table)
-    {
-        return discoverer.discover(candidate, table);
+        return ModList.get().getModContainerById(selectedMod.getModId()).map(mc->mc.getCustomExtension("customGuiFactory"));
     }
 }

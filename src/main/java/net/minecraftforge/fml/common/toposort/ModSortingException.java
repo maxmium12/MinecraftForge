@@ -22,7 +22,7 @@ package net.minecraftforge.fml.common.toposort;
 import java.util.Set;
 
 import net.minecraftforge.fml.common.EnhancedRuntimeException;
-import net.minecraftforge.fml.common.ModContainer;
+import net.minecraftforge.fml.language.ModContainer;
 
 public class ModSortingException extends EnhancedRuntimeException
 {

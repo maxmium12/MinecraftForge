@@ -1,6 +1,6 @@
 /*
  * Minecraft Forge
- * Copyright (c) 2016.
+ * Copyright (c) 2018.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,33 +17,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package net.minecraftforge.fml.common.discovery;
+package net.minecraftforge.fml.loading;
 
-import java.util.List;
-
-import net.minecraftforge.fml.language.ModContainer;
-
-public enum ContainerType
+public enum ModLoadingStage
 {
-    JAR(JarDiscoverer.class),
-    DIR(DirectoryDiscoverer.class);
-
-    private ITypeDiscoverer discoverer;
-
-    private ContainerType(Class<? extends ITypeDiscoverer> discovererClass)
-    {
-        try
-        {
-            this.discoverer = discovererClass.newInstance();
-        }
-        catch (ReflectiveOperationException e)
-        {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public List<ModContainer> findMods(ModCandidate candidate, ASMDataTable table)
-    {
-        return discoverer.discover(candidate, table);
-    }
+    ERROR, BEGIN, CONSTRUCT, PREINIT, INIT, POSTINIT, COMPLETE
 }

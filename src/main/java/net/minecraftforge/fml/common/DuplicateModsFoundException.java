@@ -23,6 +23,7 @@ import java.io.File;
 import java.util.Map.Entry;
 
 import com.google.common.collect.SetMultimap;
+import net.minecraftforge.fml.language.ModContainer;
 
 public class DuplicateModsFoundException extends LoaderException {
     private static final long serialVersionUID = 1L;
