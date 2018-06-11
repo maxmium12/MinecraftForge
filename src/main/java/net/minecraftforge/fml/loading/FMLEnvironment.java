@@ -1,6 +1,6 @@
 /*
  * Minecraft Forge
- * Copyright (c) 2016.
+ * Copyright (c) 2018.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,18 +17,12 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package net.minecraftforge.fml.common.eventhandler;
+package net.minecraftforge.fml.loading;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
+import net.minecraftforge.api.Side;
+import net.minecraftforge.fml.loading.FMLLoader;
 
-import static java.lang.annotation.RetentionPolicy.*;
-import static java.lang.annotation.ElementType.*;
-
-@Retention(value = RUNTIME)
-@Target(value = METHOD)
-public @interface SubscribeEvent
+public class FMLEnvironment
 {
-    EventPriority priority() default EventPriority.NORMAL;
-    boolean receiveCanceled() default false;
+    public static final Side side = FMLLoader.getSide();
 }

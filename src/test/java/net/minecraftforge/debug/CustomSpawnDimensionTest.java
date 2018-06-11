@@ -6,7 +6,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 @Mod(modid = CustomSpawnDimensionTest.MODID, name = "CustomSpawnDimensionTest", version = "0.1", acceptableRemoteVersions = "*")
 public class CustomSpawnDimensionTest
@@ -23,7 +23,7 @@ public class CustomSpawnDimensionTest
         }
     }
 
-    @SubscribeEvent
+    @net.minecraftforge.eventbus.api.SubscribeEvent
     public void enterDimension(EntityJoinWorldEvent event)
     {
         Entity e = event.getEntity();

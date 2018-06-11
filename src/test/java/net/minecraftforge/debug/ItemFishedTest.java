@@ -8,7 +8,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.ItemFishedEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.apache.logging.log4j.Logger;
 
 @Mod(modid = "itemfishtest", name = "ItemFishTest", version = "1.0.0", acceptableRemoteVersions = "*")
@@ -29,7 +29,7 @@ public class ItemFishedTest
         }
     }
 
-    @SubscribeEvent
+    @net.minecraftforge.eventbus.api.SubscribeEvent
     public void onItemFished(ItemFishedEvent event)
     {
         EntityFishHook hook = event.getHookEntity();

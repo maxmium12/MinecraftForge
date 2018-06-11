@@ -1,6 +1,6 @@
 /*
  * Minecraft Forge
- * Copyright (c) 2016.
+ * Copyright (c) 2018.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,15 +17,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package net.minecraftforge.fml.common.eventhandler;
+package net.minecraftforge.fml;
 
-import net.minecraftforge.fml.common.ModContainer;
-
-//Instructs event handlers to set the active mod container.
-//This has a major performance impact so use sparingly.
-//Note: The context IS NOT thread aware as this would be ungodly slow.
-//So This should ONLY be used for Forge mod lifecycle events.
-public interface IContextSetter
+public enum ModLoadingStage
 {
-    default void setModContainer(ModContainer mod){};
+    ERROR, BEGIN, CONSTRUCT, PREINIT, INIT, POSTINIT, COMPLETE
 }

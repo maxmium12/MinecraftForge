@@ -23,12 +23,7 @@ import com.google.common.reflect.TypeToken;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.ModThreadContext;
-import net.minecraftforge.fml.StringUtils;
-import net.minecraftforge.fml.common.FMLContainer;
 import net.minecraftforge.fml.common.FMLLog;
-import net.minecraftforge.fml.common.InjectedModContainer;
-import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.ModContainer;
 
 import javax.annotation.Nullable;
 

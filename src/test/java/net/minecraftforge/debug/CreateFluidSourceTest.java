@@ -5,8 +5,8 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.BlockEvent.CreateFluidSourceEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.eventhandler.Event.Result;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.eventbus.api.Event.Result;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 @Mod(modid = "createfluidsourcetest", name = "CreateFluidSourceTest", version = "1.0", acceptableRemoteVersions = "*")
 public class CreateFluidSourceTest
@@ -22,7 +22,7 @@ public class CreateFluidSourceTest
         }
     }
 
-    @SubscribeEvent
+    @net.minecraftforge.eventbus.api.SubscribeEvent
     public static void onCreateFluidSource(CreateFluidSourceEvent event)
     {
         // make it work exactly the opposite of how it works by default

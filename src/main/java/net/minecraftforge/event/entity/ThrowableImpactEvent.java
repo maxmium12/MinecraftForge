@@ -2,7 +2,7 @@ package net.minecraftforge.event.entity;
 
 import net.minecraft.entity.projectile.EntityThrowable;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraftforge.fml.common.eventhandler.Cancelable;
+import net.minecraftforge.eventbus.api.Cancelable;
 
 /**
  * This event is fired before an {@link EntityThrowable} calls its {@link EntityThrowable#onImpact} method.
@@ -14,7 +14,7 @@ import net.minecraftforge.fml.common.eventhandler.Cancelable;
  * @deprecated use {@link ProjectileImpactEvent.Throwable}
  */
 @Deprecated // TODO: remove (1.13)
-@Cancelable
+@net.minecraftforge.eventbus.api.Cancelable
 public class ThrowableImpactEvent extends EntityEvent
 {
     private final EntityThrowable throwable;

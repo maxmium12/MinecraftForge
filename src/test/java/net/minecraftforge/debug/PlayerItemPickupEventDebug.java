@@ -3,11 +3,10 @@ package net.minecraftforge.debug;
 import org.apache.logging.log4j.Logger;
 
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 
 @Mod(modid = PlayerItemPickupEventDebug.MODID, name = PlayerItemPickupEventDebug.NAME, version = PlayerItemPickupEventDebug.VERSION, acceptableRemoteVersions = "*")

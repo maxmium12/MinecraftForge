@@ -10,7 +10,7 @@ import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 @Mod(modid = "playerdamagereworktest", name = "PlayerDamageReworkTest", version = "0.0.0", acceptableRemoteVersions = "*")
 public class PlayerDamageReworkTest
@@ -25,7 +25,7 @@ public class PlayerDamageReworkTest
         if (ENABLE) MinecraftForge.EVENT_BUS.register(this);
     }
 
-    @SubscribeEvent
+    @net.minecraftforge.eventbus.api.SubscribeEvent
     public void checkForSneakEvent(LivingUpdateEvent event)
     {
         if (event.getEntityLiving() instanceof EntityPlayer)

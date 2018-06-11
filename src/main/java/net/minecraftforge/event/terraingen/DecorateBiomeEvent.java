@@ -23,9 +23,9 @@ import java.util.Random;
 
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.eventhandler.Cancelable;
-import net.minecraftforge.fml.common.eventhandler.Event;
-import net.minecraftforge.fml.common.eventhandler.Event.HasResult;
+import net.minecraftforge.eventbus.api.Cancelable;
+import net.minecraftforge.eventbus.api.Event;
+import net.minecraftforge.eventbus.api.Event.HasResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -38,7 +38,7 @@ import net.minecraft.world.World;
  * {@link #rand} contains an instance of Random to be used. <br>
  * {@link #pos} contains the coordinates of the Chunk being decorated. <br>
  * <br>
- * This event is not {@link Cancelable}.
+ * This event is not {@link net.minecraftforge.eventbus.api.Cancelable}.
  * <br>
  * This event does not have a result. {@link HasResult}
  * <br>

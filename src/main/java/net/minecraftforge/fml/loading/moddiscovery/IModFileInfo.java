@@ -1,6 +1,6 @@
 /*
  * Minecraft Forge
- * Copyright (c) 2016.
+ * Copyright (c) 2018.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,23 +17,23 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package net.minecraftforge.fml.common;
+package net.minecraftforge.fml.loading.moddiscovery;
 
-import com.google.common.eventbus.EventBus;
+import com.electronwill.nightconfig.core.UnmodifiableConfig;
+import net.minecraftforge.fml.common.versioning.VersionRange;
 
-public class MCPDummyContainer extends DummyModContainer {
-	public MCPDummyContainer(ModMetadata metadata) {
-		super(metadata);
-	}
+import java.net.URL;
+import java.util.List;
 
-	@Override
-	public boolean registerBus(EventBus bus, LoadController controller) {
-		return true;
-	}
+public interface IModFileInfo
+{
+    List<IModInfo> getMods();
 
-	@Override
-	public Disableable canBeDisabled()
-	{
-	    return Disableable.YES;
-	}
+    UnmodifiableConfig getConfig();
+
+    URL getUpdateURL(IModFileInfo modFileInfo);
+
+    String getModLoader();
+
+    VersionRange getModLoaderVersion();
 }
