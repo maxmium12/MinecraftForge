@@ -17,23 +17,25 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package net.minecraftforge.fml.loading.moddiscovery;
+package net.minecraftforge.fml.language;
 
-import com.electronwill.nightconfig.core.UnmodifiableConfig;
-import net.minecraftforge.fml.common.versioning.VersionRange;
+import net.minecraftforge.fml.common.ModContainer;
 
-import java.net.URL;
-import java.util.List;
+import java.util.function.Consumer;
 
-public interface IModFileInfo
+/**
+ * Loaded as a ServiceLoader, from the classpath. Extensions are loaded from
+ * the mods directory, with the FMLType META-INF of LANGPROVIDER.
+ *
+ * Version data is read from the manifest's implementation version.
+ */
+public interface IModLanguageProvider
 {
-    List<IModInfo> getMods();
+    String name();
 
-    UnmodifiableConfig getConfig();
+    Consumer<ModFileScanData> getFileVisitor();
 
-    URL getUpdateURL(IModFileInfo modFileInfo);
-
-    String getModLoader();
-
-    VersionRange getModLoaderVersion();
+    interface IModLanguageLoader {
+        ModContainer loadMod(IModInfo info, ClassLoader modClassLoader, ModFileScanData modFileScanResults);
+    }
 }
