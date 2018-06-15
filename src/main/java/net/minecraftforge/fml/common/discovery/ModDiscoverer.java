@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
 import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.LoaderException;
 import net.minecraftforge.fml.common.ModClassLoader;
-import net.minecraftforge.fml.language.ModContainer;
+import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.relauncher.CoreModManager;
 import net.minecraftforge.fml.relauncher.FileListHelper;
 

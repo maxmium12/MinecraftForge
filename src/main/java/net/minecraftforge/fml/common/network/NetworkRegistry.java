@@ -36,16 +36,16 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
 import net.minecraft.network.INetHandler;
 import net.minecraft.world.World;
+import net.minecraftforge.api.Side;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.FMLLog;
-import net.minecraftforge.fml.language.ModContainer;
+import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import net.minecraftforge.fml.common.network.FMLOutboundHandler.OutboundTarget;
 import net.minecraftforge.fml.common.network.handshake.NetworkDispatcher;
 import net.minecraftforge.fml.common.network.internal.FMLProxyPacket;
 import net.minecraftforge.fml.common.network.internal.NetworkModHolder;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
-import net.minecraftforge.fml.relauncher.Side;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
@@ -312,7 +312,7 @@ public enum NetworkRegistry
     {
         return registry.values().stream()
                 .filter(mod -> !mod.acceptsVanilla(from))
-                .map(mod -> mod.getContainer().getName())
+                .map(mod -> mod.getContainer().getModId())
                 .sorted()
                 .collect(Collectors.toList());
     }
@@ -339,6 +339,7 @@ public enum NetworkRegistry
      */
     public void fireNetworkHandshake(NetworkDispatcher networkDispatcher, Side origin)
     {
+/*
         NetworkHandshakeEstablished handshake = new NetworkHandshakeEstablished(networkDispatcher, networkDispatcher.getNetHandler(), origin);
         for (Entry<String, FMLEmbeddedChannel> channel : channels.get(origin).entrySet())
         {
@@ -346,5 +347,6 @@ public enum NetworkRegistry
             channel.getValue().attr(FMLOutboundHandler.FML_MESSAGETARGETARGS).set(networkDispatcher);
             channel.getValue().pipeline().fireUserEventTriggered(handshake);
         }
+*/
     }
 }

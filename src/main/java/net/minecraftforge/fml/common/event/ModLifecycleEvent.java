@@ -1,6 +1,6 @@
 /*
  * Minecraft Forge
- * Copyright (c) 2018.
+ * Copyright (c) 2016.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,9 +17,27 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package net.minecraftforge.fml.loading;
+package net.minecraftforge.fml.common.event;
 
-public enum ModLoadingStage
+import net.minecraftforge.eventbus.api.Event;
+import net.minecraftforge.fml.ModContainer;
+
+/**
+ * Parent type to all ModLifecycle events. This is based on Forge EventBus. They fire through the
+ * ModContainer's eventbus instance.
+ */
+public class ModLifecycleEvent extends Event
 {
-    ERROR, BEGIN, CONSTRUCT, PREINIT, INIT, POSTINIT, COMPLETE
+    private final ModContainer container;
+
+    public ModLifecycleEvent(ModContainer container)
+    {
+        this.container = container;
+    }
+
+    public final String description()
+    {
+       String cn = getClass().getName();
+       return cn.substring(cn.lastIndexOf('.')+4,cn.length()-5);
+    }
 }

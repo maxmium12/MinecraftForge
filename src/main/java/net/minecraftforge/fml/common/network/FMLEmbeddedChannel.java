@@ -25,11 +25,13 @@ import io.netty.channel.embedded.EmbeddedChannel;
 import java.util.Map.Entry;
 
 import net.minecraft.network.Packet;
+import net.minecraftforge.api.Side;
+import net.minecraftforge.fml.ModThreadContext;
 import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.language.ModContainer;
+import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.common.network.FMLOutboundHandler.OutboundTarget;
 import net.minecraftforge.fml.common.network.internal.FMLProxyPacket;
-import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.javafmlmod.ModLoadingContext;
 
 import javax.annotation.Nullable;
 
@@ -43,7 +45,7 @@ import javax.annotation.Nullable;
 public class FMLEmbeddedChannel extends EmbeddedChannel {
     public FMLEmbeddedChannel(String channelName, Side source, ChannelHandler... handlers)
     {
-        this(Loader.instance().activeModContainer(), channelName, source, handlers);
+        this(ModThreadContext.get().getCurrentContainer(), channelName, source, handlers);
     }
     public FMLEmbeddedChannel(ModContainer container, String channelName, Side source, ChannelHandler... handlers)
     {

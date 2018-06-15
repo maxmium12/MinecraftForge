@@ -1,6 +1,6 @@
 /*
  * Minecraft Forge
- * Copyright (c) 2016.
+ * Copyright (c) 2018.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,26 +17,27 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package net.minecraftforge.fml.common.event;
+package net.minecraftforge.fml.javafmlmod;
 
-import net.minecraftforge.fml.language.ModContainer;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.language.ExtensionPoint;
 
-/**
- * Parent type to all FML events. This is based on Guava EventBus. Event Subscription isn't using the Guava annotation
- * however, it's using a custom annotation specific to FML {@link net.minecraftforge.fml.common.Mod.EventHandler}
- */
-public class FMLEvent
+import java.util.function.Supplier;
+
+public class ModLoadingContext
 {
-    public final String getEventType()
-    {
-        return getClass().getSimpleName();
+    private static ThreadLocal<ModLoadingContext> context = ThreadLocal.withInitial(ModLoadingContext::new);
+    FMLModContainer activeContainer;
+    public static ModLoadingContext get() {
+        return context.get();
     }
-    public final String description()
-    {
-       String cn = getClass().getName();
-       return cn.substring(cn.lastIndexOf('.')+4,cn.length()-5);
+
+    public <T> void registerExtensionPoint(ExtensionPoint<T> point, Supplier<T> extension) {
+        activeContainer.registerExtensionPoint(point, extension);
     }
-    public void applyModContainer(ModContainer activeContainer) {
-        // NO OP
+
+    public IEventBus getModEventBus()
+    {
+        return activeContainer.getEventBus();
     }
 }
