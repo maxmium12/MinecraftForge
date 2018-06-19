@@ -79,6 +79,8 @@ import javax.annotation.Nullable;
 
 import org.apache.commons.lang3.Validate;
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import static net.minecraftforge.fml.Logging.fmlLog;
 
@@ -112,6 +114,7 @@ public class GameData
 
     private static final ResourceLocation BLOCK_TO_ITEM    = new ResourceLocation("minecraft:blocktoitemmap");
     private static final ResourceLocation BLOCKSTATE_TO_ID = new ResourceLocation("minecraft:blockstatetoid");
+        private static final Logger LOGGER = LogManager.getLogger("FML");
     private static boolean hasInit = false;
     private static final boolean DISABLE_VANILLA_REGISTRIES = Boolean.parseBoolean(System.getProperty("forge.disableVanillaGameData", "false")); // Use for unit tests/debugging
     private static final BiConsumer<ResourceLocation, ForgeRegistry<?>> LOCK_VANILLA = (name, reg) -> reg.slaves.values().stream().filter(o -> o instanceof ILockableRegistry).forEach(o -> ((ILockableRegistry)o).lock());
@@ -547,8 +550,7 @@ public class GameData
                 }
                 else if (isLocalWorld)
                 {
-                    if (ForgeRegistry.DEBUG)
-                        FMLLog.log.debug("Registry {}: Resuscitating dummy entry {}", key, dummy);
+                   LOGGER.debug("Registry {}: Resuscitating dummy entry {}", key, dummy);
                 }
                 else
                 {
@@ -735,12 +737,10 @@ public class GameData
         if (filter.test(BLOCKS))
         {
             MinecraftForge.EVENT_BUS.post(RegistryManager.ACTIVE.getRegistry(BLOCKS).getRegisterEvent(BLOCKS));
-            ObjectHolderRegistry.INSTANCE.applyObjectHolders(); // inject any blocks
         }
         if (filter.test(ITEMS))
         {
             MinecraftForge.EVENT_BUS.post(RegistryManager.ACTIVE.getRegistry(ITEMS).getRegisterEvent(ITEMS));
-            ObjectHolderRegistry.INSTANCE.applyObjectHolders(); // inject any items
         }
         for (ResourceLocation rl : keys)
         {
@@ -748,7 +748,6 @@ public class GameData
             if (rl == BLOCKS || rl == ITEMS) continue;
             MinecraftForge.EVENT_BUS.post(RegistryManager.ACTIVE.getRegistry(rl).getRegisterEvent(rl));
         }
-        ObjectHolderRegistry.INSTANCE.applyObjectHolders(); // inject everything else
 
 
         /*

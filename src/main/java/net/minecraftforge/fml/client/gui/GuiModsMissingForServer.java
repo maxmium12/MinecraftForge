@@ -1,6 +1,6 @@
 /*
  * Minecraft Forge
- * Copyright (c) 2016.
+ * Copyright (c) 2018.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,21 +17,22 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package net.minecraftforge.fml.client;
+package net.minecraftforge.fml.client.gui;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.resources.I18n;
+import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.common.MissingModsException;
+import net.minecraftforge.fml.common.versioning.ArtifactVersion;
 
-public class GuiAccessDenied extends GuiScreen
+public class GuiModsMissingForServer extends GuiScreen
 {
-    private GuiScreen parent;
-    private ServerData data;
-    public GuiAccessDenied(GuiScreen parent, ServerData data)
+    private MissingModsException modsMissing;
+
+    public GuiModsMissingForServer(MissingModsException modsMissing)
     {
-        this.parent = parent;
-        this.data = data;
+        this.modsMissing = modsMissing;
     }
 
     @Override
@@ -45,17 +46,25 @@ public class GuiAccessDenied extends GuiScreen
     {
         if (p_73875_1_.enabled && p_73875_1_.id == 1)
         {
-            FMLClientHandler.instance().showGuiScreen(parent);
+            FMLClientHandler.instance().showGuiScreen(null);
         }
     }
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
         this.drawDefaultBackground();
-        int offset = Math.max(85 - 2 * 10, 10);
+        int offset = Math.max(85 - modsMissing.missingMods.size() * 10, 10);
         this.drawCenteredString(this.fontRenderer, "Forge Mod Loader could not connect to this server", this.width / 2, offset, 0xFFFFFF);
         offset += 10;
-        this.drawCenteredString(this.fontRenderer, String.format("The server %s has forbidden modded access", data.serverName), this.width / 2, offset, 0xFFFFFF);
+        this.drawCenteredString(this.fontRenderer, "The mods and versions listed below could not be found", this.width / 2, offset, 0xFFFFFF);
+        offset += 10;
+        this.drawCenteredString(this.fontRenderer, "They are required to play on this server", this.width / 2, offset, 0xFFFFFF);
+        offset += 5;
+        for (ArtifactVersion v : modsMissing.missingMods)
+        {
+            offset += 10;
+            this.drawCenteredString(this.fontRenderer, String.format("%s : %s", v.getLabel(), v.getRangeString()), this.width / 2, offset, 0xEEEEEE);
+        }
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
 }

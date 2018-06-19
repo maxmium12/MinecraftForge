@@ -17,17 +17,26 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package net.minecraftforge.fml.language;
+package net.minecraftforge.fml.client.gui;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.resources.IResourcePack;
-
-import java.util.function.BiFunction;
-import java.util.function.Function;
-
-public class ExtensionPoint<T>
+public class GuiCustomModLoadingErrorScreen extends GuiErrorBase
 {
-    public static final ExtensionPoint<BiFunction<Minecraft, GuiScreen, GuiScreen>> GUIFACTORY = new ExtensionPoint<>();
-    public static final ExtensionPoint<Function<Minecraft, IResourcePack>> RESOURCEPACK = new ExtensionPoint<>();
+    private CustomModLoadingErrorDisplayException customException;
+    public GuiCustomModLoadingErrorScreen(CustomModLoadingErrorDisplayException customException)
+    {
+        this.customException = customException;
+    }
+    @Override
+    public void initGui()
+    {
+        super.initGui();
+        this.customException.initGui(this, fontRenderer);
+    }
+    @Override
+    public void drawScreen(int mouseX, int mouseY, float partialTicks)
+    {
+        this.drawDefaultBackground();
+        super.drawScreen(mouseX, mouseY, partialTicks);
+        this.customException.drawScreen(this, fontRenderer, mouseX, mouseY, partialTicks);
+    }
 }

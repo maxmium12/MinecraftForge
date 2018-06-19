@@ -17,28 +17,18 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package net.minecraftforge.fml.language;
+package net.minecraftforge.fml;
 
-import net.minecraftforge.fml.LifecycleEventProvider;
-
-import java.util.function.Consumer;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Loaded as a ServiceLoader, from the classpath. ExtensionPoint are loaded from
- * the mods directory, with the FMLType META-INF of LANGPROVIDER.
- *
- * Version data is read from the manifest's implementation version.
+ * Accumulates errors during loading for compact handling
  */
-public interface IModLanguageProvider
+public class ModLoadingException extends RuntimeException
 {
-    String name();
+    private List<ErrorEvent> errorEvents = new ArrayList<>();
+    public static class ErrorEvent {
 
-    Consumer<ModFileScanData> getFileVisitor();
-
-    void preLifecycleEvent(LifecycleEventProvider.LifecycleEvent lifecycleEvent);
-    void postLifecycleEvent(LifecycleEventProvider.LifecycleEvent lifecycleEvent);
-
-    interface IModLanguageLoader {
-        <T> T loadMod(IModInfo info, ClassLoader modClassLoader, ModFileScanData modFileScanResults);
     }
 }
