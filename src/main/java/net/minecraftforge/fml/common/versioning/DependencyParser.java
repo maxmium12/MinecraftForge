@@ -30,7 +30,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import net.minecraftforge.fml.common.LoaderException;
 import net.minecraftforge.fml.javafmlmod.FMLModContainer;
-import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.api.distmarker.Dist;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

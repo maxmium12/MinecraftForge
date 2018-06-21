@@ -22,9 +22,7 @@ package net.minecraftforge.fml.common;
 import java.util.Locale;
 
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.relauncher.FMLLaunchHandler;
-import net.minecraftforge.fml.relauncher.FMLRelaunchLog;
-import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.api.distmarker.Dist;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;

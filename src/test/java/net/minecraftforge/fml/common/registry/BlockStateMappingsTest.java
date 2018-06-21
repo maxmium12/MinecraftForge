@@ -6,7 +6,6 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Bootstrap;
 import net.minecraftforge.fml.common.DummyModContainer;
 import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.ModMetadata;
 import net.minecraftforge.registries.GameData;
 
 import org.junit.BeforeClass;

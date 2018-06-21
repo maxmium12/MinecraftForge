@@ -21,6 +21,8 @@ package net.minecraftforge.client;
 
 import java.nio.ByteBuffer;
 
+import net.minecraft.client.multiplayer.WorldClient;
+import net.minecraftforge.common.ForgeMod;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
@@ -41,7 +43,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import net.minecraftforge.common.ForgeModContainer;
 
 public class CloudRenderer implements IResourceManagerReloadListener
 {
@@ -266,7 +267,7 @@ public class CloudRenderer implements IResourceManagerReloadListener
 
     public void checkSettings()
     {
-        boolean newEnabled = ForgeModContainer.forgeCloudsEnabled
+        boolean newEnabled = ForgeMod.forgeCloudsEnabled
                 && mc.gameSettings.shouldRenderClouds() != 0
                 && mc.world != null
                 && mc.world.provider.isSurfaceWorld();
@@ -482,4 +483,29 @@ public class CloudRenderer implements IResourceManagerReloadListener
     {
         reloadTextures();
     }
+
+    private static CloudRenderer cloudRenderer;
+    private static CloudRenderer getCloudRenderer()
+    {
+        if (cloudRenderer == null)
+            cloudRenderer = new CloudRenderer();
+        return cloudRenderer;
+    }
+
+    public static void updateCloudSettings()
+    {
+        getCloudRenderer().checkSettings();
+    }
+
+    public static boolean renderClouds(int cloudTicks, float partialTicks, WorldClient world, Minecraft client)
+    {
+        IRenderHandler renderer = world.provider.getCloudRenderer();
+        if (renderer != null)
+        {
+            renderer.render(partialTicks, world, client);
+            return true;
+        }
+        return getCloudRenderer().render(cloudTicks, partialTicks);
+    }
+
 }

@@ -13,7 +13,6 @@ import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
-import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 
@@ -23,7 +22,6 @@ public class WRNormalMod
     @Instance("wrnormal")
     public static WRNormalMod instance;
 
-    @SidedProxy
     public static ServerProxy proxy;
 
     @EventHandler

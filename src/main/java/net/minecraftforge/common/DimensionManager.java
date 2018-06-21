@@ -32,7 +32,6 @@ import java.util.concurrent.ConcurrentMap;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntListIterator;
-import org.apache.logging.log4j.Level;
 
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Lists;
@@ -50,13 +49,17 @@ import net.minecraft.world.WorldServer;
 import net.minecraft.world.WorldServerMulti;
 import net.minecraft.world.storage.ISaveHandler;
 import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.FMLLog;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.MarkerManager;
 
 import javax.annotation.Nullable;
 
 public class DimensionManager
 {
+    private static final Logger LOGGER = LogManager.getLogger("FML");
+    private static final Marker DIMMGR = MarkerManager.getMarker("DIMS");
     private static class Dimension
     {
         private final DimensionType type;
@@ -169,11 +172,11 @@ public class DimensionManager
                 int leakCount = leakedWorlds.count(System.identityHashCode(w));
                 if (leakCount == 5)
                 {
-                    FMLLog.log.debug("The world {} ({}) may have leaked: first encounter (5 occurrences).\n", Integer.toHexString(System.identityHashCode(w)), w.getWorldInfo().getWorldName());
+                    LOGGER.debug(DIMMGR,"The world {} ({}) may have leaked: first encounter (5 occurrences).\n", Integer.toHexString(System.identityHashCode(w)), w.getWorldInfo().getWorldName());
                 }
                 else if (leakCount % 5 == 0)
                 {
-                    FMLLog.log.debug("The world {} ({}) may have leaked: seen {} times.\n", Integer.toHexString(System.identityHashCode(w)), w.getWorldInfo().getWorldName(), leakCount);
+                    LOGGER.debug(DIMMGR,"The world {} ({}) may have leaked: seen {} times.\n", Integer.toHexString(System.identityHashCode(w)), w.getWorldInfo().getWorldName(), leakCount);
                 }
             }
         }
@@ -191,13 +194,13 @@ public class DimensionManager
             worlds.put(id, world);
             weakWorldMap.put(world, world);
             server.worldTickTimes.put(id, new long[100]);
-            FMLLog.log.info("Loading dimension {} ({}) ({})", id, world.getWorldInfo().getWorldName(), world.getMinecraftServer());
+            LOGGER.info(DIMMGR,"Loading dimension {} ({}) ({})", id, world.getWorldInfo().getWorldName(), world.getMinecraftServer());
         }
         else
         {
             worlds.remove(id);
             server.worldTickTimes.remove(id);
-            FMLLog.log.info("Unloading dimension {}", id);
+            LOGGER.info(DIMMGR,"Unloading dimension {}", id);
         }
 
         ArrayList<WorldServer> tmp = new ArrayList<WorldServer>();
@@ -234,7 +237,7 @@ public class DimensionManager
         }
         catch (Exception e)
         {
-            FMLLog.log.error("Cannot Hotload Dim: {}", dim, e);
+            LOGGER.error(DIMMGR,"Cannot Hotload Dim: {}", dim, e);
             return; // If a provider hasn't been registered then we can't hotload the dim
         }
         MinecraftServer mcServer = overworld.getMinecraftServer();
@@ -292,7 +295,7 @@ public class DimensionManager
         }
         catch (Exception e)
         {
-            FMLLog.log.error("An error occurred trying to create an instance of WorldProvider {} ({})",
+            LOGGER.error(DIMMGR,"An error occurred trying to create an instance of WorldProvider {} ({})",
                     dim, getProviderType(dim), e);
             throw new RuntimeException(e);
         }
@@ -307,7 +310,7 @@ public class DimensionManager
     {
         if(!unloadQueue.contains(id))
         {
-            FMLLog.log.debug("Queueing dimension {} to unload", id);
+            LOGGER.debug(DIMMGR,"Queueing dimension {} to unload", id);
             unloadQueue.add(id);
         }
         else
@@ -329,7 +332,7 @@ public class DimensionManager
         while (queueIterator.hasNext()) {
             int id = queueIterator.next();
             Dimension dimension = dimensions.get(id);
-            if (dimension.ticksWaited < ForgeModContainer.dimensionUnloadQueueDelay)
+            if (dimension.ticksWaited < ForgeMod.dimensionUnloadQueueDelay)
             {
                 dimension.ticksWaited++;
                 continue;
@@ -339,7 +342,7 @@ public class DimensionManager
             dimension.ticksWaited = 0;
             if (w == null || !ForgeChunkManager.getPersistentChunksFor(w).isEmpty() || !w.playerEntities.isEmpty() || dimension.type.shouldLoadSpawn()) //Don't unload the world if the status changed
             {
-                FMLLog.log.debug("Aborting unload for dimension {} as status changed", id);
+                LOGGER.debug(DIMMGR,"Aborting unload for dimension {} as status changed", id);
                 continue;
             }
             try
@@ -348,7 +351,7 @@ public class DimensionManager
             }
             catch (MinecraftException e)
             {
-                FMLLog.log.error("Caught an exception while saving all chunks:", e);
+                LOGGER.error(DIMMGR,"Caught an exception while saving all chunks:", e);
             }
             finally
             {

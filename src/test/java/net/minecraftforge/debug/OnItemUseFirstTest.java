@@ -12,7 +12,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import javax.annotation.Nonnull;
@@ -23,7 +22,6 @@ public class OnItemUseFirstTest
 {
     public static final boolean ENABLE = true;
     public static final String MODID = "onitemusefirsttest";
-    @SidedProxy
     public static CommonProxy proxy = null;
 
     public static abstract class CommonProxy

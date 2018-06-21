@@ -22,7 +22,6 @@ package net.minecraftforge.fml.common.network.handshake;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 
-import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
@@ -30,13 +29,13 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.handshake.FMLHandshakeMessage.ServerHello;
 import net.minecraftforge.fml.common.network.internal.FMLMessage;
 import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
-import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.registries.ForgeRegistry;
 import net.minecraftforge.registries.GameData;
 

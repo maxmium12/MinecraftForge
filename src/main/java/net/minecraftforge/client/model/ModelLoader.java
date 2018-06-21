@@ -72,7 +72,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.IRegistry;
 import net.minecraftforge.client.model.animation.AnimationItemOverrideList;
 import net.minecraftforge.client.model.animation.ModelBlockAnimation;
-import net.minecraftforge.common.ForgeModContainer;
+import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.model.IModelState;
 import net.minecraftforge.common.model.Models;
 import net.minecraftforge.common.model.TRSRTransformation;
@@ -81,7 +81,6 @@ import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.Properties;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.client.ClientModLoader;
-import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.ProgressManager;
 import net.minecraftforge.fml.common.ProgressManager.ProgressBar;
@@ -275,7 +274,7 @@ public final class ModelLoader extends ModelBakery
         // register model for the universal bucket, if it exists
         if(FluidRegistry.isUniversalBucketEnabled())
         {
-            setBucketModelDefinition(ForgeModContainer.getInstance().universalBucket);
+            setBucketModelDefinition(ForgeMod.getInstance().universalBucket);
         }
 
         registerVariantNames();

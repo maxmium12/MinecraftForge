@@ -76,7 +76,6 @@ import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.passive.EntityHorse;
-import net.minecraft.entity.passive.HorseArmorType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
@@ -113,7 +112,7 @@ import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import net.minecraftforge.client.model.ModelDynBucket;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.animation.Animation;
-import net.minecraftforge.common.ForgeModContainer;
+import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.ForgeVersion;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.model.IModelPart;
@@ -272,7 +271,7 @@ public class ForgeHooksClient
         skyInit = true;
 
         GameSettings settings = Minecraft.getMinecraft().gameSettings;
-        int[] ranges = ForgeModContainer.blendRanges;
+        int[] ranges = ForgeMod.blendRanges;
         int distance = 0;
         if (settings.fancyGraphics && ranges.length > 0)
         {

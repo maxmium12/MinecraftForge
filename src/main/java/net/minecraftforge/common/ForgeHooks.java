@@ -24,13 +24,16 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -104,7 +107,6 @@ import net.minecraft.world.storage.loot.LootEntry;
 import net.minecraft.world.storage.loot.LootTable;
 import net.minecraft.world.storage.loot.LootTableManager;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
-import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.util.BlockSnapshot;
 import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.DifficultyChangeEvent;
@@ -132,12 +134,11 @@ import net.minecraftforge.event.entity.player.AdvancementEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.NoteBlockEvent;
 import net.minecraftforge.fluids.IFluidBlock;
-import net.minecraftforge.fml.common.FMLLog;
-import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.LoaderState;
-import net.minecraftforge.fml.ModContainer;
-import net.minecraftforge.fml.common.network.handshake.NetworkDispatcher;
-import net.minecraftforge.fml.common.network.handshake.NetworkDispatcher.ConnectionType;
+import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.network.ConnectionType;
+import net.minecraftforge.fml.loading.moddiscovery.ModFile;
+import net.minecraftforge.fml.loading.moddiscovery.ModFileInfo;
+import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.RegistryManager;
@@ -146,10 +147,15 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.MarkerManager;
 
 public class ForgeHooks
 {
+    private static final Logger LOGGER = LogManager.getLogger("FML");
+    private static final Marker FORGEHOOKS = MarkerManager.getMarker("FORGEHOOKS");
     //TODO: Loot tables?
     static class SeedEntry extends WeightedRandom.Item
     {
@@ -629,7 +635,7 @@ public class ForgeHooks
     {
         boolean isSpectator = (entity instanceof EntityPlayer && ((EntityPlayer)entity).isSpectator());
         if (isSpectator) return false;
-        if (!ForgeModContainer.fullBoundingBoxLadders)
+        if (!ForgeMod.fullBoundingBoxLadders)
         {
             return state.getBlock().isLadder(state, world, pos, entity);
         }
@@ -1290,13 +1296,10 @@ public class ForgeHooks
     public static boolean loadAdvancements(Map<ResourceLocation, Advancement.Builder> map)
     {
         boolean errored = false;
-        setActiveModContainer(null);
-        //Loader.instance().getActiveModList().forEach((mod) -> loadFactories(mod));
-        for (ModContainer mod : Loader.instance().getActiveModList())
+        for (ModFileInfo mod : ModList.get().getModFiles())
         {
-            errored |= !loadAdvancements(map, mod);
+            errored |= !loadAdvancements(map, mod.getFile());
         }
-        setActiveModContainer(null);
         return errored;
     }
 
@@ -1312,72 +1315,62 @@ public class ForgeHooks
         return null;
     }
 
-    private static void setActiveModContainer(ModContainer mod)
+    private static boolean loadAdvancements(Map<ResourceLocation, Advancement.Builder> map, ModFile mod)
     {
-        if (Loader.instance().getLoaderState() != LoaderState.NOINIT) //Unit Tests..
-            Loader.instance().setActiveModContainer(mod);
-    }
-
-    private static boolean loadAdvancements(Map<ResourceLocation, Advancement.Builder> map, ModContainer mod)
-    {
-        return CraftingHelper.findFiles(mod, "assets/" + mod.getModId() + "/advancements", null,
-            (root, file) ->
+        final AtomicBoolean errored = new AtomicBoolean(false);
+        mod.getModInfos().forEach(mi-> {
+            final String modId = mi.getModId();
+            final Path root = mod.getLocator().findPath(mod, "assets", modId, "advancements");
+            if (!Files.exists(root)) return;
+            try
             {
+                Files.walk(root).
+                        filter(p -> Objects.equals("json", FilenameUtils.getExtension(p.toString())) || !p.getFileName().toString().startsWith("_")).
+                        forEach(file -> {
+                            String relative = root.relativize(file).toString();
+                            String name = FilenameUtils.removeExtension(relative).replaceAll("\\\\", "/");
+                            ResourceLocation key = new ResourceLocation(modId, name);
 
-                String relative = root.relativize(file).toString();
-                if (!"json".equals(FilenameUtils.getExtension(file.toString())) || relative.startsWith("_"))
-                    return true;
+                            if (!map.containsKey(key))
+                            {
+                                try (BufferedReader reader = Files.newBufferedReader(file))
+                                {
+                                    Advancement.Builder builder = JsonUtils.fromJson(AdvancementManager.GSON, reader, Advancement.Builder.class);
+                                    map.put(key, builder);
+                                }
+                                catch (JsonParseException jsonparseexception)
+                                {
+                                    LOGGER.error(FORGEHOOKS, "Parsing error loading built-in advancement " + key, (Throwable)jsonparseexception);
+                                    errored.set(true);
+                                }
+                                catch (IOException ioexception)
+                                {
+                                    LOGGER.error(FORGEHOOKS, "Couldn't read advancement " + key + " from " + file, (Throwable)ioexception);
+                                    errored.set(true);
+                                }
+                            }
 
-                String name = FilenameUtils.removeExtension(relative).replaceAll("\\\\", "/");
-                ResourceLocation key = new ResourceLocation(mod.getModId(), name);
-
-                if (!map.containsKey(key))
-                {
-                    BufferedReader reader = null;
-
-                    try
-                    {
-                        reader = Files.newBufferedReader(file);
-                        Advancement.Builder builder = JsonUtils.fromJson(AdvancementManager.GSON, reader, Advancement.Builder.class);
-                        map.put(key, builder);
-                    }
-                    catch (JsonParseException jsonparseexception)
-                    {
-                        FMLLog.log.error("Parsing error loading built-in advancement " + key, (Throwable)jsonparseexception);
-                        return false;
-                    }
-                    catch (IOException ioexception)
-                    {
-                        FMLLog.log.error("Couldn't read advancement " + key + " from " + file, (Throwable)ioexception);
-                        return false;
-                    }
-                    finally
-                    {
-                        IOUtils.closeQuietly(reader);
-                    }
-                }
-
-                return true;
-            },
-            true, true
-        );
+                        });
+            }
+            catch (IOException e)
+            {
+                LOGGER.error(FORGEHOOKS, "Advancement walk failed", e);
+                errored.set(true);
+            }
+        });
+        return errored.get();
     }
 
     public static void sendRecipeBook(NetHandlerPlayServer connection, State state, List<IRecipe> recipes, List<IRecipe> display, boolean isGuiOpen, boolean isFilteringCraftable)
     {
-        NetworkDispatcher disp = NetworkDispatcher.get(connection.getNetworkManager());
-        //Not sure how it could ever be null, but screw it lets protect against it. Could Error the client but we dont care if they are asking for this stuff in the wrong state!
-        ConnectionType type = disp == null || disp.getConnectionType() == null ? ConnectionType.MODDED : disp.getConnectionType();
-        if (type == ConnectionType.VANILLA)
+        if (NetworkHooks.getConnectionType(connection) == ConnectionType.VANILLA)
         {
             IForgeRegistry<IRecipe> vanilla = RegistryManager.VANILLA.getRegistry(IRecipe.class);
-            if (recipes.size() > 0)
-                recipes = recipes.stream().filter(e -> vanilla.containsValue(e)).collect(Collectors.toList());
-            if (display.size() > 0)
-                display = display.stream().filter(e -> vanilla.containsValue(e)).collect(Collectors.toList());
+            recipes = recipes.stream().filter(vanilla::containsValue).collect(Collectors.toList());
+            display = display.stream().filter(vanilla::containsValue).collect(Collectors.toList());
         }
 
-        if (recipes.size() > 0 || display.size() > 0)
+        if (!recipes.isEmpty() || !display.isEmpty())
             connection.sendPacket(new SPacketRecipeBook(state, recipes, display, isGuiOpen, isFilteringCraftable));
     }
 

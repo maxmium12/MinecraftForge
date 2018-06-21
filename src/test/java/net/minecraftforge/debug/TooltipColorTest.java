@@ -1,12 +1,12 @@
 package net.minecraftforge.debug;
 
 import net.minecraft.init.Items;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderTooltipEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
 
 @Mod(modid = TooltipColorTest.MODID, name = "Tooltip Color Test", version = "0.1", clientSideOnly = true)
 public class TooltipColorTest
@@ -24,7 +24,7 @@ public class TooltipColorTest
     }
 
     @SubscribeEvent
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void getTooltipColor(RenderTooltipEvent.Color event)
     {
         if (event.getStack().getItem() == Items.APPLE)

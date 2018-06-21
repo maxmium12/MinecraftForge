@@ -2,6 +2,7 @@ package net.minecraftforge.debug;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -9,7 +10,6 @@ import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
-import net.minecraftforge.fml.relauncher.Side;
 
 @Mod(modid = BigNetworkMessageTest.MOD_ID, name = "Big network message test mod", version = "1.0", acceptableRemoteVersions = "*")
 @Mod.EventBusSubscriber
