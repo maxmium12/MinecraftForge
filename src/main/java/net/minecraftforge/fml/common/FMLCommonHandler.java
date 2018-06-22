@@ -577,7 +577,7 @@ public class FMLCommonHandler
             return false;
         }
 
-        manager.channel().attr(NetworkRegistry.FML_MARKER).set(packet.hasFMLMarker());
+        manager.channel().attr(net.minecraftforge.fml.network.NetworkRegistry.FML_MARKER).set(packet.hasFMLMarker());
         return true;
     }
 
