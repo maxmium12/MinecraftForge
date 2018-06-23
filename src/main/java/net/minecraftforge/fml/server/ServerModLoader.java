@@ -17,25 +17,24 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package net.minecraftforge.fml.common.event;
+package net.minecraftforge.fml.server;
 
 import net.minecraft.server.dedicated.DedicatedServer;
-import net.minecraftforge.fml.ModContainer;
+import net.minecraftforge.fml.LogicalSidedProvider;
+import net.minecraftforge.fml.ModLoader;
+import net.minecraftforge.fml.SidedProvider;
 
-import java.util.function.Supplier;
-
-public class FMLServerInitEvent extends ModLifecycleEvent
+public class ServerModLoader
 {
-    private final Supplier<DedicatedServer> serverSupplier;
-
-    public FMLServerInitEvent(Supplier<DedicatedServer> server, ModContainer container)
-    {
-        super(container);
-        this.serverSupplier = server;
+    private static DedicatedServer server;
+    public static void begin(DedicatedServer dedicatedServer) {
+        ServerModLoader.server = dedicatedServer;
+        SidedProvider.setServer(()->dedicatedServer);
+        LogicalSidedProvider.setServer(()->dedicatedServer);
+        ModLoader.get().loadMods();
     }
 
-    public Supplier<DedicatedServer> getServerSupplier()
-    {
-        return serverSupplier;
+    public static void end() {
+        ModLoader.get().finishMods();
     }
 }

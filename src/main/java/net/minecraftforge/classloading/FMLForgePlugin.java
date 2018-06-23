@@ -22,44 +22,9 @@ package net.minecraftforge.classloading;
 import java.io.File;
 import java.util.Map;
 
-import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
-
 import javax.annotation.Nullable;
 
-public class FMLForgePlugin implements IFMLLoadingPlugin
+public class FMLForgePlugin
 {
     public static boolean RUNTIME_DEOBF = false;
-    public static File forgeLocation;
-
-    @Override
-    public String[] getASMTransformerClass()
-    {
-        return new String[0];
-    }
-
-    @Override
-    public String getModContainerClass()
-    {
-        return "net.minecraftforge.common.ForgeMod";
-    }
-
-    @Override
-    @Nullable
-    public String getSetupClass()
-    {
-        return null;
-    }
-
-    @Override
-    public void injectData(Map<String, Object> data)
-    {
-        RUNTIME_DEOBF = (Boolean)data.get("runtimeDeobfuscationEnabled");
-        forgeLocation = (File)data.get("coremodLocation");
-    }
-
-    @Override
-    public String getAccessTransformerClass()
-    {
-        return null;
-    }
 }
