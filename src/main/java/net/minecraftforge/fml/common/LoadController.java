@@ -34,7 +34,6 @@ import net.minecraftforge.fml.common.event.ModLifecycleEvent;
 import net.minecraftforge.fml.common.event.FMLLoadEvent;
 import net.minecraftforge.fml.common.event.FMLModDisabledEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLStateEvent;
 import net.minecraftforge.fml.common.versioning.ArtifactVersion;
 
 import net.minecraftforge.fml.ModContainer;
