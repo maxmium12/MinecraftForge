@@ -20,22 +20,17 @@
 package net.minecraftforge.advancements.critereon;
 
 import com.google.gson.JsonObject;
-import gnu.trove.map.hash.THashMap;
-import net.minecraft.advancements.critereon.ItemPredicate;
+import it.unimi.dsi.fastutil.objects.Object2ReferenceArrayMap;
+import it.unimi.dsi.fastutil.objects.Object2ReferenceMap;
+import it.unimi.dsi.fastutil.objects.Object2ReferenceMaps;
+import net.minecraft.advancements.criterion.ItemPredicate;
 import net.minecraft.util.ResourceLocation;
-
-import java.util.Collections;
 import java.util.Map;
 import java.util.function.Function;
 
 public class ItemPredicates
 {
-    private static final Map<ResourceLocation, Function<JsonObject, ItemPredicate>> predicates = new THashMap<>();
-
-    static
-    {
-        register(new ResourceLocation("forge:ore_dict"), OredictItemPredicate::new);
-    }
+    private static final Object2ReferenceMap<ResourceLocation, Function<JsonObject, ItemPredicate>> predicates = new Object2ReferenceArrayMap<>();
 
     public static void register(ResourceLocation rl, Function<JsonObject, ItemPredicate> jsonToPredicate)
     {
@@ -44,6 +39,6 @@ public class ItemPredicates
 
     public static Map<ResourceLocation, Function<JsonObject, ItemPredicate>> getPredicates()
     {
-        return Collections.unmodifiableMap(predicates);
+        return Object2ReferenceMaps.unmodifiable(predicates);
     }
 }

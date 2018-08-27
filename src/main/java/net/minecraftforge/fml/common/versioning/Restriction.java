@@ -19,8 +19,6 @@
 
 package net.minecraftforge.fml.common.versioning;
 
-import net.minecraft.util.text.translation.I18n;
-
 import javax.annotation.Nullable;
 
 /**
@@ -202,61 +200,5 @@ public class Restriction
         buf.append( isUpperBoundInclusive() ? "]" : ")" );
 
         return buf.toString();
-    }
-
-    public String toStringFriendly()
-    {
-        if ( getLowerBound() == null && getUpperBound() == null )
-        {
-            return I18n.translateToLocal("fml.messages.version.restriction.any");
-        }
-        else if ( getLowerBound() != null && getUpperBound() != null )
-        {
-            if ( getLowerBound().getVersionString().equals(getUpperBound().getVersionString()) )
-            {
-                return getLowerBound().getVersionString();
-            }
-            else
-            {
-                if (isLowerBoundInclusive() && isUpperBoundInclusive())
-                {
-                    return I18n.translateToLocalFormatted("fml.messages.version.restriction.bounded.inclusive", getLowerBound(), getUpperBound());
-                }
-                else if (isLowerBoundInclusive())
-                {
-                    return I18n.translateToLocalFormatted("fml.messages.version.restriction.bounded.upperexclusive", getLowerBound(), getUpperBound());
-                }
-                else if (isUpperBoundInclusive())
-                {
-                    return I18n.translateToLocalFormatted("fml.messages.version.restriction.bounded.lowerexclusive", getLowerBound(), getUpperBound());
-                }
-                else
-                {
-                    return I18n.translateToLocalFormatted("fml.messages.version.restriction.bounded.exclusive", getLowerBound(), getUpperBound());
-                }
-            }
-        }
-        else if ( getLowerBound() != null )
-        {
-            if ( isLowerBoundInclusive() )
-            {
-                return I18n.translateToLocalFormatted("fml.messages.version.restriction.lower.inclusive", getLowerBound());
-            }
-            else
-            {
-                return I18n.translateToLocalFormatted("fml.messages.version.restriction.lower.exclusive", getLowerBound());
-            }
-        }
-        else
-        {
-            if ( isUpperBoundInclusive() )
-            {
-                return I18n.translateToLocalFormatted("fml.messages.version.restriction.upper.inclusive", getUpperBound());
-            }
-            else
-            {
-                return I18n.translateToLocalFormatted("fml.messages.version.restriction.upper.exclusive", getUpperBound());
-            }
-        }
     }
 }

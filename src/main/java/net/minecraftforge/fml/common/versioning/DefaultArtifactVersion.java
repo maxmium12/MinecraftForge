@@ -22,7 +22,6 @@ package net.minecraftforge.fml.common.versioning;
 public class DefaultArtifactVersion implements ArtifactVersion
 {
     private ComparableVersion comparableVersion;
-    private String label;
     private boolean unbounded;
     private VersionRange range;
 
@@ -30,23 +29,6 @@ public class DefaultArtifactVersion implements ArtifactVersion
     {
         comparableVersion = new ComparableVersion(versionNumber);
         range = VersionRange.createFromVersion(versionNumber, this);
-    }
-
-    public DefaultArtifactVersion(String label, VersionRange range)
-    {
-        this.label = label;
-        this.range = range;
-    }
-    public DefaultArtifactVersion(String label, String version)
-    {
-        this(version);
-        this.label = label;
-    }
-
-    public DefaultArtifactVersion(String string, boolean unbounded)
-    {
-        this.label = string;
-        this.unbounded = true;
     }
 
     @Override
@@ -62,18 +44,8 @@ public class DefaultArtifactVersion implements ArtifactVersion
     }
 
     @Override
-    public String getLabel()
-    {
-        return label;
-    }
-
-    @Override
     public boolean containsVersion(ArtifactVersion source)
     {
-        if (source.getLabel() != null && !source.getLabel().equals(getLabel()))
-        {
-            return false;
-        }
         if (unbounded)
         {
             return true;
@@ -102,7 +74,7 @@ public class DefaultArtifactVersion implements ArtifactVersion
     @Override
     public String toString()
     {
-        return label == null ? comparableVersion.toString() : label + ( unbounded ? "" : "@" + range);
+        return comparableVersion.toString();
     }
 
     public VersionRange getRange()

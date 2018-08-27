@@ -25,7 +25,7 @@ import java.util.Map.Entry;
 import java.util.Optional;
 
 import com.google.common.collect.Multimap;
-import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.INBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ResourceLocation;
@@ -47,7 +47,7 @@ import org.apache.logging.log4j.MarkerManager;
 public final class FMLWorldPersistenceHook implements WorldPersistenceHooks.WorldPersistenceHook
 {
 
-    private static final Logger LOGGER = LogManager.getLogger("FML");
+    private static final Logger LOGGER = LogManager.getLogger();
     private static final Marker WORLDPERSISTENCE = MarkerManager.getMarker("WP");
 
     @Override
@@ -66,7 +66,7 @@ public final class FMLWorldPersistenceHook implements WorldPersistenceHooks.Worl
             final NBTTagCompound mod = new NBTTagCompound();
             mod.setString("ModId", mi.getModId());
             mod.setString("ModVersion", mi.getVersion().getVersionString());
-            modList.appendTag(mod);
+            modList.add(mod);
         });
         fmlData.setTag("LoadingModList", modList);
 
@@ -85,7 +85,7 @@ public final class FMLWorldPersistenceHook implements WorldPersistenceHooks.Worl
                 NBTTagCompound tag = new NBTTagCompound();
                 tag.setString("K", item.getKey().toString());
                 tag.setInteger("V", item.getValue());
-                ids.appendTag(tag);
+                ids.add(tag);
             }
             data.setTag("ids", ids);
 
@@ -95,7 +95,7 @@ public final class FMLWorldPersistenceHook implements WorldPersistenceHooks.Worl
                 NBTTagCompound tag = new NBTTagCompound();
                 tag.setString("K", entry.getKey().toString());
                 tag.setString("V", entry.getValue().toString());
-                aliases.appendTag(tag);
+                aliases.add(tag);
             }
             data.setTag("aliases", aliases);
 
@@ -105,7 +105,7 @@ public final class FMLWorldPersistenceHook implements WorldPersistenceHooks.Worl
                 NBTTagCompound tag = new NBTTagCompound();
                 tag.setString("K", entry.getKey().toString());
                 tag.setString("V", entry.getValue().toString());
-                aliases.appendTag(tag);
+                aliases.add(tag);
             }
             data.setTag("overrides", overrides);
 
@@ -121,7 +121,7 @@ public final class FMLWorldPersistenceHook implements WorldPersistenceHooks.Worl
             {
                 NBTTagCompound tag = new NBTTagCompound();
                 tag.setString("K", entry.toString());
-                dummied.appendTag(tag);
+                dummied.add(tag);
             }
             data.setTag("dummied", dummied);
         }
@@ -129,12 +129,12 @@ public final class FMLWorldPersistenceHook implements WorldPersistenceHooks.Worl
     }
 
     @Override
-    public void readData(SaveHandler handler, WorldInfo info, Map<String, NBTBase> propertyMap, NBTTagCompound tag)
+    public void readData(SaveHandler handler, WorldInfo info, NBTTagCompound tag)
     {
         if (tag.hasKey("LoadingModList"))
         {
             NBTTagList modList = tag.getTagList("LoadingModList", (byte)10);
-            for (int i = 0; i < modList.tagCount(); i++)
+            for (int i = 0; i < modList.size(); i++)
             {
                 NBTTagCompound mod = modList.getCompoundTagAt(i);
                 String modId = mod.getString("ModId");
@@ -170,14 +170,14 @@ public final class FMLWorldPersistenceHook implements WorldPersistenceHooks.Worl
                 snapshot.put(new ResourceLocation(key), entry);
 
                 NBTTagList list = ent.getTagList("ids", 10);
-                for (int x = 0; x < list.tagCount(); x++)
+                for (int x = 0; x < list.size(); x++)
                 {
                     NBTTagCompound e = list.getCompoundTagAt(x);
                     entry.ids.put(new ResourceLocation(e.getString("K")), e.getInteger("V"));
                 }
 
                 list = ent.getTagList("aliases", 10);
-                for (int x = 0; x < list.tagCount(); x++)
+                for (int x = 0; x < list.size(); x++)
                 {
                     NBTTagCompound e = list.getCompoundTagAt(x);
                     entry.aliases.put(new ResourceLocation(e.getString("K")), new ResourceLocation(e.getString("V")));
@@ -192,7 +192,7 @@ public final class FMLWorldPersistenceHook implements WorldPersistenceHooks.Worl
                 if (regs.getCompoundTag(key).hasKey("dummied")) // Added in 1.8.9 dev, some worlds may not have it.
                 {
                     list = regs.getCompoundTag(key).getTagList("dummied",10);
-                    for (int x = 0; x < list.tagCount(); x++)
+                    for (int x = 0; x < list.size(); x++)
                     {
                         NBTTagCompound e = list.getCompoundTagAt(x);
                         entry.dummied.add(new ResourceLocation(e.getString("K")));
