@@ -51,7 +51,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 
-public class ForgeRegistry<V extends IForgeRegistryEntry<V>> implements IForgeRegistryInternal<V>, IForgeRegistryModifiable<V>
+public class ForgeRegistry<V extends ForgeRegistryEntry<V>> implements IForgeRegistryInternal<V>, IForgeRegistryModifiable<V>
 {
     public static Marker REGISTRIES = MarkerManager.getMarker("REGISTRIES");
     private static Logger LOGGER = LogManager.getLogger();
@@ -93,7 +93,7 @@ public class ForgeRegistry<V extends IForgeRegistryEntry<V>> implements IForgeRe
         this.add = add;
         this.clear = clear;
         this.missing = missing;
-        this.isDelegated = IForgeRegistryEntry.Impl.class.isAssignableFrom(superType); //TODO: Make this IDelegatedRegistryEntry?
+        this.isDelegated = ForgeRegistryEntry.class.isAssignableFrom(superType); //TODO: Make this IDelegatedRegistryEntry?
         this.allowOverrides = allowOverrides;
         this.isModifiable = isModifiable;
         this.dummyFactory = dummyFactory;
@@ -385,7 +385,7 @@ public class ForgeRegistry<V extends IForgeRegistryEntry<V>> implements IForgeRe
     private RegistryDelegate<V> getDelegate(V thing)
     {
         if (isDelegated)
-            return (RegistryDelegate<V>)((IForgeRegistryEntry.Impl<V>)thing).delegate;
+            return (RegistryDelegate<V>)((ForgeRegistryEntry<V>)thing).delegate;
         else
             throw new IllegalStateException("Tried to get existing delegate from registry that is not delegated.");
     }

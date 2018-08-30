@@ -12,18 +12,20 @@ import com.google.common.collect.Sets;
 import com.google.common.collect.Sets.SetView;
 
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.registries.ForgeRegistry.Snapshot;
 import net.minecraftforge.registries.IForgeRegistry.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class RegistryManager
 {
+    private static final Logger LOGGER = LogManager.getLogger();
     public static final RegistryManager ACTIVE = new RegistryManager("ACTIVE");
     public static final RegistryManager VANILLA = new RegistryManager("VANILLA");
     public static final RegistryManager FROZEN = new RegistryManager("FROZEN");
 
-    BiMap<ResourceLocation, ForgeRegistry<? extends IForgeRegistryEntry<?>>> registries = HashBiMap.create();
-    private BiMap<Class<? extends IForgeRegistryEntry<?>>, ResourceLocation> superTypes = HashBiMap.create();
+    BiMap<ResourceLocation, ForgeRegistry<? extends ForgeRegistryEntry<?>>> registries = HashBiMap.create();
+    private BiMap<Class<? extends ForgeRegistryEntry<?>>, ResourceLocation> superTypes = HashBiMap.create();
     private Set<ResourceLocation> persisted = Sets.newHashSet();
     private final String name;
 
@@ -38,28 +40,28 @@ public class RegistryManager
     }
 
     @SuppressWarnings("unchecked")
-    public <V extends IForgeRegistryEntry<V>> Class<V> getSuperType(ResourceLocation key)
+    public <V extends ForgeRegistryEntry<V>> Class<V> getSuperType(ResourceLocation key)
     {
         return (Class<V>)superTypes.inverse().get(key);
     }
 
     @SuppressWarnings("unchecked")
-    public <V extends IForgeRegistryEntry<V>> ForgeRegistry<V> getRegistry(ResourceLocation key)
+    public <V extends ForgeRegistryEntry<V>> ForgeRegistry<V> getRegistry(ResourceLocation key)
     {
         return (ForgeRegistry<V>)this.registries.get(key);
     }
 
-    public <V extends IForgeRegistryEntry<V>> IForgeRegistry<V> getRegistry(Class<V> cls)
+    public <V extends ForgeRegistryEntry<V>> IForgeRegistry<V> getRegistry(Class<V> cls)
     {
         return getRegistry(superTypes.get(cls));
     }
 
-    public <V extends IForgeRegistryEntry<V>> ResourceLocation getName(IForgeRegistry<V> reg)
+    public <V extends ForgeRegistryEntry<V>> ResourceLocation getName(IForgeRegistry<V> reg)
     {
         return this.registries.inverse().get(reg);
     }
 
-    public <V extends IForgeRegistryEntry<V>> ForgeRegistry<V> getRegistry(ResourceLocation key, RegistryManager other)
+    public <V extends ForgeRegistryEntry<V>> ForgeRegistry<V> getRegistry(ResourceLocation key, RegistryManager other)
     {
         if (!this.registries.containsKey(key))
         {
@@ -74,9 +76,9 @@ public class RegistryManager
         return getRegistry(key);
     }
 
-    <V extends IForgeRegistryEntry<V>> ForgeRegistry<V> createRegistry(ResourceLocation name, Class<V> type, ResourceLocation defaultKey, int min, int max,
-            @Nullable AddCallback<V> add, @Nullable ClearCallback<V> clear, @Nullable CreateCallback<V> create,
-            boolean persisted, boolean allowOverrides, boolean isModifiable, @Nullable DummyFactory<V> dummyFactory, @Nullable MissingFactory<V> missing)
+    <V extends ForgeRegistryEntry<V>> ForgeRegistry<V> createRegistry(ResourceLocation name, Class<V> type, ResourceLocation defaultKey, int min, int max,
+                                                                      @Nullable AddCallback<V> add, @Nullable ClearCallback<V> clear, @Nullable CreateCallback<V> create,
+                                                                      boolean persisted, boolean allowOverrides, boolean isModifiable, @Nullable DummyFactory<V> dummyFactory, @Nullable MissingFactory<V> missing)
     {
         Set<Class<?>> parents = Sets.newHashSet();
         findSuperTypes(type, parents);
@@ -84,7 +86,7 @@ public class RegistryManager
         if (!overlappedTypes.isEmpty())
         {
             Class<?> foundType = overlappedTypes.iterator().next();
-            FMLLog.log.error("Found existing registry of type {} named {}, you cannot create a new registry ({}) with type {}, as {} has a parent of that type", foundType, superTypes.get(foundType), name, type, type);
+            LOGGER.error("Found existing registry of type {} named {}, you cannot create a new registry ({}) with type {}, as {} has a parent of that type", foundType, superTypes.get(foundType), name, type, type);
             throw new IllegalArgumentException("Duplicate registry parent type found - you can only have one registry for a particular super type");
         }
         ForgeRegistry<V> reg = new ForgeRegistry<V>(type, defaultKey, min, max, create, add, clear, this, allowOverrides, isModifiable, dummyFactory, missing);
